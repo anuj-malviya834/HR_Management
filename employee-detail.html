@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HR Management — Employee Attendance Profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    input[type="time"]::-webkit-calendar-picker-indicator,
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      opacity: 0.6;
+    }
+
+    input[type="time"]::-webkit-calendar-picker-indicator:hover,
+    input[type="date"]::-webkit-calendar-picker-indicator:hover {
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body class="bg-neutral-50 text-neutral-800 min-h-screen flex flex-col">
+
+  <header class="bg-white border-b border-neutral-200 sticky top-0 z-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-14">
+
+        <div class="flex items-center space-x-3">
+          <div
+            class="w-7 h-7 bg-neutral-900 rounded flex items-center justify-center text-white font-bold text-xs tracking-wider">
+            HR
+          </div>
+          <div class="flex items-center space-x-2">
+            <a href="index.html"
+              class="font-semibold text-sm text-neutral-900 tracking-tight hover:text-neutral-600 transition">HR
+              Management</a>
+            <span class="text-neutral-300">/</span>
+            <a href="index.html" class="text-xs font-medium text-neutral-500 hover:text-neutral-800 transition">Employee
+              Attendance</a>
+            <span class="text-neutral-300">/</span>
+            <span class="text-xs font-medium text-neutral-900">Attendance Profile</span>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <div class="flex items-center border border-neutral-200 rounded bg-neutral-50 px-2 py-1">
+            <span class="text-xs text-neutral-500 font-medium mr-1.5">Switch Staff:</span>
+            <select id="employeeSwitcherSelect"
+              class="text-xs text-neutral-800 font-medium bg-transparent focus:outline-none cursor-pointer">
+            </select>
+          </div>
+
+          <div class="flex items-center space-x-2.5">
+            <div
+              class="w-7 h-7 rounded-full bg-neutral-200 border border-neutral-300 text-neutral-700 flex items-center justify-center text-xs font-semibold">
+              SJ
+            </div>
+            <div class="text-left hidden md:block">
+              <div class="text-xs font-medium text-neutral-900 leading-none">Sarah Jenkins</div>
+              <div class="text-[11px] text-neutral-500 leading-tight mt-0.5">HR Administrator</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-5">
+
+    <section class="bg-white border border-neutral-200 rounded-lg p-5 sm:p-6 shadow-xs">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+
+        <div class="flex items-center gap-5">
+          <div id="profileAvatar"
+            class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-neutral-100 border border-neutral-200 text-neutral-800 flex items-center justify-center text-xl sm:text-2xl font-bold shrink-0 shadow-xs">
+            SC
+          </div>
+          <div class="space-y-1.5">
+            <div class="flex flex-wrap items-center gap-2.5">
+              <h1 id="profileName" class="text-xl sm:text-2xl font-bold text-neutral-900 tracking-tight">Sarah Chen</h1>
+              <span id="profileEmpId"
+                class="font-mono text-xs text-neutral-700 bg-neutral-100 px-2.5 py-0.5 rounded border border-neutral-200 font-semibold">EMP-1001</span>
+              <span id="profileStatusBadge"
+                class="text-xs px-2.5 py-0.5 rounded font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">Active
+                • Full-Time</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs sm:text-sm text-neutral-500">
+              <div><span class="font-medium text-neutral-700">Designation:</span> <span id="profileDesignation"
+                  class="text-neutral-900">Staff Backend Engineer</span></div>
+              <span class="text-neutral-300">•</span>
+              <div><span class="font-medium text-neutral-700">Department:</span> <span id="profileDepartment"
+                  class="text-neutral-900">Engineering</span></div>
+              <span class="text-neutral-300">•</span>
+              <div><span class="font-medium text-neutral-700">Joined:</span> <span id="profileJoiningDate"
+                  class="text-neutral-900">March 15, 2022</span></div>
+              <span class="text-neutral-300">•</span>
+              <div><span class="font-medium text-neutral-700">Email:</span> <span id="profileEmail"
+                  class="text-neutral-900">sarah.chen@acme.inc</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="flex flex-wrap items-center gap-2.5 border-t lg:border-t-0 pt-4 lg:pt-0 border-neutral-100 shrink-0">
+          <div class="flex items-center border border-neutral-200 rounded bg-white px-3 py-1.5 shadow-xs">
+            <span class="text-xs text-neutral-500 font-medium mr-2">Period:</span>
+            <select id="periodSelector"
+              class="text-xs text-neutral-800 font-medium bg-transparent focus:outline-none cursor-pointer">
+              <option value="THIS_MONTH">This Month (Oct 2026)</option>
+              <option value="LAST_MONTH">Last Month (Sep 2026)</option>
+              <option value="THIS_YEAR">This Year (2026)</option>
+              <option value="CUSTOM">Custom Date Range</option>
+            </select>
+          </div>
+
+          <div id="customDateRangeInputs" class="hidden flex items-center gap-1.5 text-xs">
+            <input type="date" id="customStartDate"
+              class="border border-neutral-200 rounded px-2.5 py-1.5 text-xs bg-white text-neutral-800 focus:outline-none">
+            <span class="text-neutral-400">to</span>
+            <input type="date" id="customEndDate"
+              class="border border-neutral-200 rounded px-2.5 py-1.5 text-xs bg-white text-neutral-800 focus:outline-none">
+            <button id="applyCustomDateBtn"
+              class="px-3 py-1.5 bg-neutral-900 text-white rounded text-xs font-medium hover:bg-neutral-800 transition shadow-xs">
+              Apply
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="bg-white border border-neutral-200 rounded-md p-3 shadow-xs">
+      <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-neutral-200">
+
+        <div class="px-3 py-2 sm:py-0">
+          <div class="text-[11px] font-medium text-neutral-500 uppercase tracking-wider flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Present Days</span>
+          </div>
+          <div class="mt-1 flex items-baseline gap-1.5">
+            <span id="kpiPresentDays" class="text-xl font-semibold text-neutral-900 tabular-nums">0</span>
+            <span class="text-xs text-neutral-400">days</span>
+          </div>
+        </div>
+
+        <div class="px-3 py-2 sm:py-0">
+          <div class="text-[11px] font-medium text-neutral-500 uppercase tracking-wider flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+            <span>Absent Days</span>
+          </div>
+          <div class="mt-1 flex items-baseline gap-1.5">
+            <span id="kpiAbsentDays" class="text-xl font-semibold text-neutral-900 tabular-nums">0</span>
+            <span class="text-xs text-neutral-400">days</span>
+          </div>
+        </div>
+
+        <div class="px-3 py-2 sm:py-0">
+          <div class="text-[11px] font-medium text-neutral-500 uppercase tracking-wider flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+            <span>Half Days</span>
+          </div>
+          <div class="mt-1 flex items-baseline gap-1.5">
+            <span id="kpiHalfDays" class="text-xl font-semibold text-neutral-900 tabular-nums">0</span>
+            <span class="text-xs text-neutral-400">days</span>
+          </div>
+        </div>
+
+        <div class="px-3 py-2 sm:py-0">
+          <div class="text-[11px] font-medium text-neutral-500 uppercase tracking-wider flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-neutral-400"></span>
+            <span>Holidays</span>
+          </div>
+          <div class="mt-1 flex items-baseline gap-1.5">
+            <span id="kpiHolidays" class="text-xl font-semibold text-neutral-900 tabular-nums">0</span>
+            <span class="text-xs text-neutral-400">days</span>
+          </div>
+        </div>
+
+        <div class="px-3 py-2 sm:py-0">
+          <div class="text-[11px] font-medium text-neutral-500 uppercase tracking-wider flex items-center gap-1.5">
+            <span>Attendance Rate</span>
+          </div>
+          <div class="mt-1 flex items-baseline gap-1.5">
+            <span id="kpiAttendanceRate" class="text-xl font-semibold text-neutral-900 tabular-nums">0%</span>
+            <span id="kpiAttendanceNote" class="text-[10px] text-neutral-500 font-normal">of scheduled</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+
+    <section class="bg-white border border-neutral-200 rounded-md shadow-xs overflow-hidden">
+
+      <div
+        class="px-4 py-3 border-b border-neutral-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-neutral-50/60">
+        <div class="flex items-center gap-2">
+          <h2 class="text-xs font-semibold text-neutral-900 uppercase tracking-wider">Attendance History Log</h2>
+          <span id="historyRecordsBadge"
+            class="text-[11px] px-2 py-0.2 rounded-full bg-neutral-200/80 text-neutral-700 font-medium">0 records</span>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <div class="flex items-center border border-neutral-200 rounded bg-white px-2 py-1 shadow-xs">
+            <span class="text-xs text-neutral-500 font-medium mr-1.5">Status:</span>
+            <select id="historyStatusFilter"
+              class="text-xs text-neutral-800 font-medium bg-transparent focus:outline-none cursor-pointer">
+              <option value="ALL">All Statuses</option>
+              <option value="PRESENT">Present</option>
+              <option value="ABSENT">Absent</option>
+              <option value="HALF_DAY">Half Day</option>
+              <option value="HOLIDAY">Holiday / Weekend</option>
+              <option value="NOT_MARKED">Not Marked</option>
+            </select>
+          </div>
+
+          <button id="exportCsvBtn"
+            class="inline-flex items-center gap-1.5 text-xs font-medium text-neutral-700 hover:text-neutral-900 bg-white border border-neutral-200 hover:bg-neutral-50 px-3 py-1.5 rounded transition shadow-xs">
+            <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            <span>Export Attendance (CSV)</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr
+              class="border-b border-neutral-200 bg-neutral-50/80 text-[11px] font-semibold text-neutral-500 uppercase tracking-wider">
+              <th scope="col" class="py-2.5 px-4 w-32">Date</th>
+              <th scope="col" class="py-2.5 px-4 w-28">Day</th>
+              <th scope="col" class="py-2.5 px-4 w-32">Check-in</th>
+              <th scope="col" class="py-2.5 px-4 w-32">Check-out</th>
+              <th scope="col" class="py-2.5 px-4 w-32">Working Hours</th>
+              <th scope="col" class="py-2.5 px-4 w-36">Status</th>
+              <th scope="col" class="py-2.5 px-4">Remarks</th>
+              <th scope="col" class="py-2.5 px-4 w-24 text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody" class="divide-y divide-neutral-200 text-xs">
+          </tbody>
+        </table>
+      </div>
+
+      <div id="historyEmptyState" class="hidden py-10 px-4 text-center">
+        <h3 class="text-xs font-semibold text-neutral-800">No attendance entries match your filters</h3>
+        <p class="mt-1 text-xs text-neutral-500">Try clearing the status filter or expanding the selected period.</p>
+      </div>
+
+      <div
+        class="px-4 py-2 border-t border-neutral-200 bg-neutral-50/50 flex items-center justify-between text-[11px] text-neutral-500">
+        <div>
+          Showing <span id="historyShowingCount" class="font-medium text-neutral-700">0</span> entries for this period
+        </div>
+        <div class="text-[11px] text-neutral-400">
+          Click Edit on any record to adjust time or status
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer class="bg-white border-t border-neutral-200 py-3 mt-auto">
+    <div
+      class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-neutral-500 gap-2">
+      <div>HR Management System &bull; Dedicated Employee Attendance Profile</div>
+      <div>Acme Corporation Operations &bull; Staff Registry v2.4</div>
+    </div>
+  </footer>
+
+  <div id="editRecordModal"
+    class="fixed inset-0 z-50 bg-neutral-900/40 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-md border border-neutral-200 shadow-md max-w-md w-full p-5 space-y-4">
+      <div class="flex items-start justify-between border-b border-neutral-100 pb-2">
+        <div>
+          <h3 class="text-sm font-semibold text-neutral-900">Edit Attendance Record</h3>
+          <p id="modalDateLabel" class="text-xs text-neutral-500 mt-0.5">Date: -</p>
+        </div>
+        <button id="modalCloseXBtn" class="text-neutral-400 hover:text-neutral-600">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-medium text-neutral-700 mb-1">Attendance Status</label>
+          <select id="modalStatusSelect"
+            class="w-full px-2.5 py-1.5 border border-neutral-200 rounded text-neutral-800 bg-white focus:outline-none focus:border-neutral-400">
+            <option value="PRESENT">Present</option>
+            <option value="ABSENT">Absent</option>
+            <option value="HALF_DAY">Half Day</option>
+            <option value="HOLIDAY">Holiday / Off Day</option>
+            <option value="NOT_MARKED">Not Marked</option>
+          </select>
+        </div>
+
+        <div id="modalTimesContainer" class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-medium text-neutral-700 mb-1">Check-in Time</label>
+            <input type="time" id="modalCheckInInput"
+              class="w-full px-2.5 py-1.5 border border-neutral-200 rounded text-neutral-800 bg-white focus:outline-none focus:border-neutral-400 font-mono">
+          </div>
+          <div>
+            <label class="block font-medium text-neutral-700 mb-1">Check-out Time</label>
+            <input type="time" id="modalCheckOutInput"
+              class="w-full px-2.5 py-1.5 border border-neutral-200 rounded text-neutral-800 bg-white focus:outline-none focus:border-neutral-400 font-mono">
+          </div>
+        </div>
+
+        <div id="modalTimeValidationError" class="text-[11px] text-rose-600 font-medium hidden">
+          Check-out time must be after check-in time.
+        </div>
+
+        <div>
+          <label class="block font-medium text-neutral-700 mb-1">Remarks</label>
+          <input type="text" id="modalRemarksInput" placeholder="e.g. Remote work, client visit, medical half-day..."
+            class="w-full px-2.5 py-1.5 border border-neutral-200 rounded text-neutral-800 placeholder-neutral-400 bg-white focus:outline-none focus:border-neutral-400">
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-3 border-t border-neutral-100">
+        <button id="modalCancelBtn"
+          class="px-3 py-1.5 text-xs font-medium text-neutral-700 hover:bg-neutral-100 rounded border border-neutral-200 transition">
+          Cancel
+        </button>
+        <button id="modalSaveBtn"
+          class="px-3 py-1.5 text-xs font-medium text-white bg-neutral-900 hover:bg-neutral-800 rounded transition shadow-xs">
+          Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"
+    class="fixed bottom-5 right-5 z-50 bg-neutral-900 text-white px-3.5 py-2 rounded shadow-md text-xs font-medium flex items-center gap-2 transform transition-all duration-200 translate-y-12 opacity-0 pointer-events-none">
+    <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+    </svg>
+    <span id="toastMessage"></span>
+  </div>
+
+  <script>
+    const zeroVal = 0;
+    const singleVal = 1;
+    const notFoundCode = -1;
+    const percentageMultiplier = 100;
+    const halfDayMultiplier = 0.5;
+    const toastDurationMs = 2600;
+    const stringPadLength = 2;
+    const padChar = '0';
+    const minutesInHour = 60;
+    const daysInWeek = 7;
+    const saturdayDayIndex = 6;
+    const sundayDayIndex = 0;
+    const defaultCheckInHour = 9;
+    const defaultCheckInMinute = 0;
+    const defaultCheckOutHour = 17;
+    const defaultCheckOutMinute = 30;
+    const halfDayCheckOutHour = 13;
+    const halfDayCheckOutMinute = 0;
+    const dateYearIndex = 0;
+    const dateMonthIndex = 1;
+    const dateDayIndex = 2;
+    const storageHistoryPrefix = 'hrm_profile_v3_records_';
+    const seedThresholdMax = 20;
+    const seedDayMultiplier = 7;
+    const seedMonthMultiplier = 13;
+    const seedHalfDayThreshold = 2;
+    const monthJulyIndex = 6;
+    const monthOctoberIndex = 9;
+
+    const statusAll = 'ALL';
+    const statusPresent = 'PRESENT';
+    const statusAbsent = 'ABSENT';
+    const statusHalfDay = 'HALF_DAY';
+    const statusHoliday = 'HOLIDAY';
+    const statusNotMarked = 'NOT_MARKED';
+
+    const sampleStaffList = [
+      {
+        id: 'EMP-1001',
+        name: 'Sarah Chen',
+        email: 'sarah.chen@acme.inc',
+        department: 'Engineering',
+        designation: 'Staff Backend Engineer',
+        initials: 'SC',
+        joiningDate: 'March 15, 2022',
+        employmentStatus: 'Active • Full-Time',
+        defaultTime: '08:45'
+      },
+      {
+        id: 'EMP-1002',
+        name: 'Marcus Vance',
+        email: 'marcus.vance@acme.inc',
+        department: 'Engineering',
+        designation: 'Senior DevOps Specialist',
+        initials: 'MV',
+        joiningDate: 'August 10, 2021',
+        employmentStatus: 'Active • Full-Time',
+        defaultTime: '09:02'
+      },
+      {
+        id: 'EMP-1003',
+        name: 'Elena Rostova',
+        email: 'elena.rostova@acme.inc',
+        department: 'Engineering',
+        designation: 'Frontend Engineer',
+        initials: 'ER',
+        joiningDate: 'January 12, 2023',
+        employmentStatus: 'Active • Full-Time',
+        defaultTime: '09:15'
+      },
+      {
+        id: 'EMP-1004',
+        name: 'David Kim',
+        email: 'david.kim@acme.inc',
+        department: 'Marketing',
+        designation: 'Growth Marketing Manager',
+        initials: 'DK',
+        joiningDate: 'June 01, 2022',
+        employmentStatus: 'Active • Full-Time',
+        defaultTime: '08:55'
+      },
+      {
+        id: 'EMP-1005',
+        name: 'Rachel Green',
+        email: 'rachel.green@acme.inc',
+        department: 'Marketing',
+        designation: 'Content Strategist',
+        initials: 'RG',
+        joiningDate: 'November 20, 2023',
+        employmentStatus: 'Active • Full-Time',
+        defaultTime: '09:10'
+      },
+      {
+        id: 'EMP-1006',
+        name: 'James Wilson',
+        email: 'james.wilson@acme.inc',
+        department: 'Sales',
+        designation: 'Enterprise Account Exec',
+        initials: 'JW',
+        joiningDate: 'September 05, 2020',
+        employmentStatus: 'Active • Full-Time',
+        defaultTime: '09:20'
+      },
+      {
+        id: 'EMP-1007',
+        name: 'Priya Patel',
+        email: 'priya.patel@acme.inc',
+        department: 'Sales',
+        designation: 'Senior Sales Representative',
+        initials: 'PP',
+        joiningDate: 'April 18, 2022',
+        employmentStatus: 'Active • Full-Time',
+        defaultTime: '08:50'
+      },
+      {
+        id: 'EMP-1008',
+        name: 'Michael Torres',
+        email: 'michael.torres@acme.inc',
+        department: 'HR',
+        designation: 'Talent Acquisition Lead',
+        initials: 'MT',
+        joiningDate: 'February 01, 2021',
+        employmentStatus: 'Active • Full-Time',
+        defaultTime: '09:05'
+      },
+      {
+        id: 'EMP-1009',
+        name: 'Amanda Brooks',
+        email: 'amanda.brooks@acme.inc',
+        department: 'HR',
+        designation: 'People Operations Partner',
+        initials: 'AB',
+        joiningDate: 'July 14, 2022',
+        employmentStatus: 'Active • Full-Time',
+        defaultTime: '08:40'
+      },
+      {
+        id: 'EMP-1010',
+        name: 'Thomas Clark',
+        email: 'thomas.clark@acme.inc',
+        department: 'Operations',
+        designation: 'Senior Supply Chain Analyst',
+        initials: 'TC',
+        joiningDate: 'October 10, 2021',
+        employmentStatus: 'Active • Full-Time',
+        defaultTime: '09:12'
+      },
+      {
+        id: 'EMP-1011',
+        name: 'Jessica Taylor',
+        email: 'jessica.taylor@acme.inc',
+        department: 'Operations',
+        designation: 'Facilities Coordinator',
+        initials: 'JT',
+        joiningDate: 'May 25, 2023',
+        employmentStatus: 'Active • Full-Time',
+        defaultTime: '08:35'
+      },
+      {
+        id: 'EMP-1012',
+        name: 'Robert Martinez',
+        email: 'robert.martinez@acme.inc',
+        department: 'Engineering',
+        designation: 'QA Automation Engineer',
+        initials: 'RM',
+        joiningDate: 'November 15, 2022',
+        employmentStatus: 'Active • Full-Time',
+        defaultTime: '09:25'
+      }
+    ];
+
+    let currentSelectedEmployeeId = 'EMP-1001';
+    let currentPeriod = 'THIS_MONTH';
+    let currentHistoryStatusFilter = statusAll;
+    let currentEditingRecordDate = null;
+    let toastTimeoutIdentifier = null;
+
+    const employeeSwitcherSelect = document.getElementById('employeeSwitcherSelect');
+    const profileAvatar = document.getElementById('profileAvatar');
+    const profileName = document.getElementById('profileName');
+    const profileEmpId = document.getElementById('profileEmpId');
+    const profileStatusBadge = document.getElementById('profileStatusBadge');
+    const profileDesignation = document.getElementById('profileDesignation');
+    const profileDepartment = document.getElementById('profileDepartment');
+    const profileJoiningDate = document.getElementById('profileJoiningDate');
+    const profileEmail = document.getElementById('profileEmail');
+
+    const periodSelector = document.getElementById('periodSelector');
+    const customDateRangeInputs = document.getElementById('customDateRangeInputs');
+    const customStartDate = document.getElementById('customStartDate');
+    const customEndDate = document.getElementById('customEndDate');
+    const applyCustomDateBtn = document.getElementById('applyCustomDateBtn');
+
+    const kpiPresentDays = document.getElementById('kpiPresentDays');
+    const kpiAbsentDays = document.getElementById('kpiAbsentDays');
+    const kpiHalfDays = document.getElementById('kpiHalfDays');
+    const kpiHolidays = document.getElementById('kpiHolidays');
+    const kpiAttendanceRate = document.getElementById('kpiAttendanceRate');
+
+    const historyTableBody = document.getElementById('historyTableBody');
+    const historyRecordsBadge = document.getElementById('historyRecordsBadge');
+    const historyShowingCount = document.getElementById('historyShowingCount');
+    const historyEmptyState = document.getElementById('historyEmptyState');
+    const historyStatusFilter = document.getElementById('historyStatusFilter');
+
+    const editRecordModal = document.getElementById('editRecordModal');
+    const modalDateLabel = document.getElementById('modalDateLabel');
+    const modalStatusSelect = document.getElementById('modalStatusSelect');
+    const modalTimesContainer = document.getElementById('modalTimesContainer');
+    const modalCheckInInput = document.getElementById('modalCheckInInput');
+    const modalCheckOutInput = document.getElementById('modalCheckOutInput');
+    const modalTimeValidationError = document.getElementById('modalTimeValidationError');
+    const modalRemarksInput = document.getElementById('modalRemarksInput');
+    const modalCloseXBtn = document.getElementById('modalCloseXBtn');
+    const modalCancelBtn = document.getElementById('modalCancelBtn');
+    const modalSaveBtn = document.getElementById('modalSaveBtn');
+
+    const toastElement = document.getElementById('toast');
+    const toastMessageElement = document.getElementById('toastMessage');
+    const exportCsvBtn = document.getElementById('exportCsvBtn');
+
+    function getPaddedString(num) {
+      const stringified = String(num).padStart(stringPadLength, padChar);
+      return stringified;
+    }
+
+    function formatIsoDate(year, monthIndex, day) {
+      const y = year;
+      const m = getPaddedString(monthIndex + singleVal);
+      const d = getPaddedString(day);
+      const iso = `${y}-${m}-${d}`;
+      return iso;
+    }
+
+    function parseIsoDate(isoStr) {
+      const parts = isoStr.split('-');
+      const year = Number(parts[dateYearIndex]);
+      const monthIndex = Number(parts[dateMonthIndex]) - singleVal;
+      const day = Number(parts[dateDayIndex]);
+      const dateObj = new Date(year, monthIndex, day);
+      return dateObj;
+    }
+
+    function calculateWorkingHours(checkIn, checkOut) {
+      if (!checkIn || !checkOut) {
+        const emptyResult = '—';
+        return emptyResult;
+      }
+      const inParts = checkIn.split(':');
+      const outParts = checkOut.split(':');
+      const inMinutes = Number(inParts[zeroVal]) * minutesInHour + Number(inParts[singleVal]);
+      const outMinutes = Number(outParts[zeroVal]) * minutesInHour + Number(outParts[singleVal]);
+      const diff = outMinutes - inMinutes;
+      if (diff <= zeroVal) {
+        const invalidResult = '0h 00m';
+        return invalidResult;
+      }
+      const hours = Math.floor(diff / minutesInHour);
+      const mins = diff % minutesInHour;
+      const formatted = `${hours}h ${getPaddedString(mins)}m`;
+      return formatted;
+    }
+
+    function showToast(message) {
+      if (toastTimeoutIdentifier) {
+        clearTimeout(toastTimeoutIdentifier);
+      }
+      toastMessageElement.textContent = message;
+      toastElement.classList.remove('translate-y-12', 'opacity-0', 'pointer-events-none');
+      toastElement.classList.add('translate-y-0', 'opacity-100');
+
+      toastTimeoutIdentifier = setTimeout(() => {
+        toastElement.classList.remove('translate-y-0', 'opacity-100');
+        toastElement.classList.add('translate-y-12', 'opacity-0', 'pointer-events-none');
+      }, toastDurationMs);
+
+      const executed = true;
+      return executed;
+    }
+
+    function generateRealisticHistoryForEmployee(emp) {
+      const recordsMap = {};
+      const currentYear = 2026;
+
+      for (let m = 6; m <= 9; m += singleVal) {
+        const daysInMonth = new Date(currentYear, m + singleVal, zeroVal).getDate();
+
+        for (let d = singleVal; d <= daysInMonth; d += singleVal) {
+          const dateObj = new Date(currentYear, m, d);
+          const iso = formatIsoDate(currentYear, m, d);
+          const dayOfWeek = dateObj.getDay();
+
+          let status = statusPresent;
+          let checkIn = emp.defaultTime;
+          let checkOut = '17:30';
+          let remarks = 'On-time standard shift';
+
+          if (dayOfWeek === saturdayDayIndex || dayOfWeek === sundayDayIndex) {
+            status = statusHoliday;
+            checkIn = '';
+            checkOut = '';
+            remarks = 'Weekend';
+          } else if (m === 6 && d === 4) {
+            status = statusHoliday;
+            checkIn = '';
+            checkOut = '';
+            remarks = 'Independence Day';
+          } else if (m === 8 && d === 7) {
+            status = statusHoliday;
+            checkIn = '';
+            checkOut = '';
+            remarks = 'Labor Day';
+          } else if (m === 9 && d === 12) {
+            status = statusHoliday;
+            checkIn = '';
+            checkOut = '';
+            remarks = 'Columbus Day / Indigenous Day';
+          } else {
+            const combinedSeed = (d * seedDayMultiplier + m * seedMonthMultiplier + emp.id.charCodeAt(emp.id.length - singleVal)) % seedThresholdMax;
+            if (combinedSeed === zeroVal || combinedSeed === singleVal) {
+              status = statusAbsent;
+              checkIn = '';
+              checkOut = '';
+              remarks = 'Unplanned absence';
+            } else if (combinedSeed === seedHalfDayThreshold) {
+              status = statusHalfDay;
+              checkIn = emp.defaultTime;
+              checkOut = '13:00';
+              remarks = 'Medical half-day';
+            } else {
+              status = statusPresent;
+              checkIn = emp.defaultTime;
+              checkOut = '17:35';
+              remarks = 'On-time attendance';
+            }
+          }
+
+          recordsMap[iso] = {
+            date: iso,
+            status: status,
+            checkIn: checkIn,
+            checkOut: checkOut,
+            remarks: remarks
+          };
+        }
+      }
+
+      const key = storageHistoryPrefix + emp.id;
+      localStorage.setItem(key, JSON.stringify(recordsMap));
+      return recordsMap;
+    }
+
+    function getAttendanceRecordsForEmployee(empId) {
+      const key = storageHistoryPrefix + empId;
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        return parsed;
+      }
+      const matched = sampleStaffList.find((e) => e.id === empId);
+      const generated = generateRealisticHistoryForEmployee(matched || sampleStaffList[zeroVal]);
+      return generated;
+    }
+
+    function saveAttendanceRecordsForEmployee(empId, recordsMap) {
+      const key = storageHistoryPrefix + empId;
+      localStorage.setItem(key, JSON.stringify(recordsMap));
+      const saved = true;
+      return saved;
+    }
+
+    function getActiveDateRange() {
+      const now = new Date(2026, 9, 15);
+      let startDate = null;
+      let endDate = null;
+
+      if (currentPeriod === 'THIS_MONTH') {
+        startDate = new Date(2026, 9, 1);
+        endDate = new Date(2026, 9, 31);
+      } else if (currentPeriod === 'LAST_MONTH') {
+        startDate = new Date(2026, 8, 1);
+        endDate = new Date(2026, 8, 30);
+      } else if (currentPeriod === 'THIS_YEAR') {
+        startDate = new Date(2026, zeroVal, 1);
+        endDate = new Date(2026, 9, 31);
+      } else if (currentPeriod === 'CUSTOM') {
+        const startVal = customStartDate.value;
+        const endVal = customEndDate.value;
+        if (startVal && endVal) {
+          startDate = parseIsoDate(startVal);
+          endDate = parseIsoDate(endVal);
+        } else {
+          startDate = new Date(2026, 9, 1);
+          endDate = new Date(2026, 9, 31);
+        }
+      }
+
+      const rangeObj = { start: startDate, end: endDate };
+      return rangeObj;
+    }
+
+    function calculateSummaryMetrics(recordsMap) {
+      const range = getActiveDateRange();
+      let presentCount = zeroVal;
+      let absentCount = zeroVal;
+      let halfDayCount = zeroVal;
+      let holidayCount = zeroVal;
+      let scheduledWorkDays = zeroVal;
+
+      const curr = new Date(range.start.getTime());
+      while (curr <= range.end) {
+        const iso = formatIsoDate(curr.getFullYear(), curr.getMonth(), curr.getDate());
+        const rec = recordsMap[iso];
+        const status = rec ? rec.status : statusNotMarked;
+
+        if (status === statusPresent) {
+          presentCount += singleVal;
+          scheduledWorkDays += singleVal;
+        } else if (status === statusAbsent) {
+          absentCount += singleVal;
+          scheduledWorkDays += singleVal;
+        } else if (status === statusHalfDay) {
+          halfDayCount += singleVal;
+          scheduledWorkDays += singleVal;
+        } else if (status === statusHoliday) {
+          holidayCount += singleVal;
+        } else if (status === statusNotMarked) {
+          const dayOfWeek = curr.getDay();
+          if (dayOfWeek !== saturdayDayIndex && dayOfWeek !== sundayDayIndex) {
+            scheduledWorkDays += singleVal;
+          }
+        }
+
+        curr.setDate(curr.getDate() + singleVal);
+      }
+
+      let attendanceRate = zeroVal;
+      if (scheduledWorkDays > zeroVal) {
+        const effectivePresent = presentCount + (halfDayCount * halfDayMultiplier);
+        attendanceRate = Math.round((effectivePresent / scheduledWorkDays) * percentageMultiplier);
+      }
+
+      kpiPresentDays.textContent = String(presentCount);
+      kpiAbsentDays.textContent = String(absentCount);
+      kpiHalfDays.textContent = String(halfDayCount);
+      kpiHolidays.textContent = String(holidayCount);
+      kpiAttendanceRate.textContent = `${attendanceRate}%`;
+
+      const greenThreshold = 90;
+      const amberThreshold = 75;
+      if (attendanceRate >= greenThreshold) {
+        kpiAttendanceRate.className = 'text-xl font-semibold text-emerald-600 tabular-nums';
+      } else if (attendanceRate >= amberThreshold) {
+        kpiAttendanceRate.className = 'text-xl font-semibold text-amber-600 tabular-nums';
+      } else {
+        kpiAttendanceRate.className = 'text-xl font-semibold text-rose-600 tabular-nums';
+      }
+
+      const metricsObj = {
+        present: presentCount,
+        absent: absentCount,
+        halfDay: halfDayCount,
+        holiday: holidayCount,
+        rate: attendanceRate
+      };
+      return metricsObj;
+    }
+
+    function renderStatusBadge(status) {
+      if (status === statusPresent) {
+        const badge = `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span>Present</span>
+        </span>`;
+        return badge;
+      }
+      if (status === statusAbsent) {
+        const badge = `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-rose-50 text-rose-700 border border-rose-200">
+          <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+          <span>Absent</span>
+        </span>`;
+        return badge;
+      }
+      if (status === statusHalfDay) {
+        const badge = `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-amber-50 text-amber-700 border border-amber-200">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+          <span>Half Day</span>
+        </span>`;
+        return badge;
+      }
+      if (status === statusHoliday) {
+        const badge = `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-neutral-100 text-neutral-600 border border-neutral-200">
+          <span class="w-1.5 h-1.5 rounded-full bg-neutral-400"></span>
+          <span>Holiday / Off</span>
+        </span>`;
+        return badge;
+      }
+      const badge = `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-neutral-50 text-neutral-400 border border-neutral-200">
+        <span class="w-1.5 h-1.5 rounded-full bg-neutral-300"></span>
+        <span>Not Marked</span>
+      </span>`;
+      return badge;
+    }
+
+    function renderHistoryTable(recordsMap) {
+      const range = getActiveDateRange();
+      const rows = [];
+
+      const curr = new Date(range.end.getTime());
+      while (curr >= range.start) {
+        const iso = formatIsoDate(curr.getFullYear(), curr.getMonth(), curr.getDate());
+        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const dayName = dayNames[curr.getDay()];
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const formattedDate = `${curr.getDate()} ${monthNames[curr.getMonth()]} ${curr.getFullYear()}`;
+
+        const rec = recordsMap[iso] || {
+          date: iso,
+          status: statusNotMarked,
+          checkIn: '',
+          checkOut: '',
+          remarks: 'No entry'
+        };
+
+        const matchesStatus = (currentHistoryStatusFilter === statusAll) || (rec.status === currentHistoryStatusFilter);
+
+        if (matchesStatus) {
+          const workingHours = calculateWorkingHours(rec.checkIn, rec.checkOut);
+          rows.push({
+            iso: iso,
+            formattedDate: formattedDate,
+            dayName: dayName,
+            checkIn: rec.checkIn || '—',
+            checkOut: rec.checkOut || '—',
+            workingHours: workingHours,
+            status: rec.status,
+            remarks: rec.remarks || '—'
+          });
+        }
+
+        curr.setDate(curr.getDate() - singleVal);
+      }
+
+      historyRecordsBadge.textContent = `${rows.length} records`;
+      historyShowingCount.textContent = String(rows.length);
+
+      if (rows.length === zeroVal) {
+        historyTableBody.innerHTML = '';
+        historyEmptyState.classList.remove('hidden');
+        const emptyResult = zeroVal;
+        return emptyResult;
+      }
+
+      historyEmptyState.classList.add('hidden');
+      const markup = rows.map((r) => {
+        const rowHtml = `
+          <tr id="row-${r.iso}" class="hover:bg-neutral-50/70 transition border-b border-neutral-200/80">
+            <td class="py-2.5 px-4 font-mono text-neutral-700 font-medium">${r.formattedDate}</td>
+            <td class="py-2.5 px-4 text-neutral-500">${r.dayName}</td>
+            <td class="py-2.5 px-4 font-mono text-neutral-700">${r.checkIn}</td>
+            <td class="py-2.5 px-4 font-mono text-neutral-700">${r.checkOut}</td>
+            <td class="py-2.5 px-4 font-mono text-neutral-600 font-medium">${r.workingHours}</td>
+            <td class="py-2.5 px-4">${renderStatusBadge(r.status)}</td>
+            <td class="py-2.5 px-4 text-neutral-500">${r.remarks}</td>
+            <td class="py-2.5 px-4 text-right">
+              <button data-edit-date="${r.iso}" class="edit-record-btn px-2.5 py-1 text-xs border border-neutral-200 hover:bg-neutral-100 rounded text-neutral-700 font-medium transition shadow-2xs">
+                Edit
+              </button>
+            </td>
+          </tr>
+        `;
+        return rowHtml;
+      }).join('');
+
+      historyTableBody.innerHTML = markup;
+
+      const editButtons = historyTableBody.querySelectorAll('.edit-record-btn');
+      editButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const dateToEdit = btn.getAttribute('data-edit-date');
+          openEditModal(dateToEdit);
+        });
+      });
+
+      const renderedCount = rows.length;
+      return renderedCount;
+    }
+
+    function refreshProfileView() {
+      const employee = sampleStaffList.find((e) => e.id === currentSelectedEmployeeId) || sampleStaffList[zeroVal];
+      profileAvatar.textContent = employee.initials;
+      profileName.textContent = employee.name;
+      profileEmpId.textContent = employee.id;
+      profileDesignation.textContent = employee.designation;
+      profileDepartment.textContent = employee.department;
+      profileJoiningDate.textContent = employee.joiningDate;
+      profileEmail.textContent = employee.email;
+      profileStatusBadge.textContent = employee.employmentStatus;
+
+      const recordsMap = getAttendanceRecordsForEmployee(currentSelectedEmployeeId);
+      calculateSummaryMetrics(recordsMap);
+      renderHistoryTable(recordsMap);
+
+      const refreshed = true;
+      return refreshed;
+    }
+
+    function openEditModal(dateIso) {
+      currentEditingRecordDate = dateIso;
+      const recordsMap = getAttendanceRecordsForEmployee(currentSelectedEmployeeId);
+      const rec = recordsMap[dateIso] || {
+        date: dateIso,
+        status: statusPresent,
+        checkIn: '09:00',
+        checkOut: '17:30',
+        remarks: ''
+      };
+
+      modalDateLabel.textContent = `Date: ${dateIso}`;
+      modalStatusSelect.value = rec.status;
+      modalCheckInInput.value = rec.checkIn || '';
+      modalCheckOutInput.value = rec.checkOut || '';
+      modalRemarksInput.value = rec.remarks || '';
+      modalTimeValidationError.classList.add('hidden');
+
+      toggleModalTimeInputs(rec.status);
+      editRecordModal.classList.remove('hidden');
+
+      const opened = true;
+      return opened;
+    }
+
+    function closeEditModal() {
+      editRecordModal.classList.add('hidden');
+      currentEditingRecordDate = null;
+      const closed = true;
+      return closed;
+    }
+
+    function toggleModalTimeInputs(statusVal) {
+      if (statusVal === statusAbsent || statusVal === statusHoliday) {
+        modalTimesContainer.classList.add('opacity-40', 'pointer-events-none');
+      } else {
+        modalTimesContainer.classList.remove('opacity-40', 'pointer-events-none');
+      }
+      const toggled = true;
+      return toggled;
+    }
+
+    modalStatusSelect.addEventListener('change', (e) => {
+      toggleModalTimeInputs(e.target.value);
+    });
+
+    modalCloseXBtn.addEventListener('click', closeEditModal);
+    modalCancelBtn.addEventListener('click', closeEditModal);
+
+    modalSaveBtn.addEventListener('click', () => {
+      if (!currentEditingRecordDate) {
+        return;
+      }
+      const newStatus = modalStatusSelect.value;
+      const inTime = modalCheckInInput.value;
+      const outTime = modalCheckOutInput.value;
+      const remarks = modalRemarksInput.value.trim();
+
+      if (newStatus === statusPresent || newStatus === statusHalfDay) {
+        if (inTime && outTime && outTime <= inTime) {
+          modalTimeValidationError.classList.remove('hidden');
+          return;
+        }
+      }
+
+      const recordsMap = getAttendanceRecordsForEmployee(currentSelectedEmployeeId);
+      recordsMap[currentEditingRecordDate] = {
+        date: currentEditingRecordDate,
+        status: newStatus,
+        checkIn: (newStatus === statusAbsent || newStatus === statusHoliday) ? '' : inTime,
+        checkOut: (newStatus === statusAbsent || newStatus === statusHoliday) ? '' : outTime,
+        remarks: remarks
+      };
+
+      saveAttendanceRecordsForEmployee(currentSelectedEmployeeId, recordsMap);
+      closeEditModal();
+      refreshProfileView();
+      showToast(`Record for ${currentEditingRecordDate} successfully updated`);
+    });
+
+    function exportAttendanceToCsv() {
+      const employee = sampleStaffList.find((e) => e.id === currentSelectedEmployeeId) || sampleStaffList[zeroVal];
+      const recordsMap = getAttendanceRecordsForEmployee(currentSelectedEmployeeId);
+      const range = getActiveDateRange();
+
+      const csvRows = [];
+      csvRows.push(['Employee ID', 'Employee Name', 'Department', 'Date', 'Day', 'Status', 'Check In', 'Check Out', 'Working Hours', 'Remarks']);
+
+      const curr = new Date(range.start.getTime());
+      while (curr <= range.end) {
+        const iso = formatIsoDate(curr.getFullYear(), curr.getMonth(), curr.getDate());
+        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const dayName = dayNames[curr.getDay()];
+        const rec = recordsMap[iso] || { status: statusNotMarked, checkIn: '', checkOut: '', remarks: '' };
+        const workHours = calculateWorkingHours(rec.checkIn, rec.checkOut);
+
+        csvRows.push([
+          employee.id,
+          `"${employee.name}"`,
+          `"${employee.department}"`,
+          iso,
+          dayName,
+          rec.status,
+          rec.checkIn || '',
+          rec.checkOut || '',
+          workHours,
+          `"${rec.remarks || ''}"`
+        ]);
+
+        curr.setDate(curr.getDate() + singleVal);
+      }
+
+      const csvContent = 'data:text/csv;charset=utf-8,' + csvRows.map((r) => r.join(',')).join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `Attendance_${employee.id}_${employee.name.replace(/\s+/g, '_')}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Attendance CSV exported successfully');
+
+      const exported = true;
+      return exported;
+    }
+
+    exportCsvBtn.addEventListener('click', exportAttendanceToCsv);
+
+    periodSelector.addEventListener('change', (e) => {
+      currentPeriod = e.target.value;
+      if (currentPeriod === 'CUSTOM') {
+        customDateRangeInputs.classList.remove('hidden');
+      } else {
+        customDateRangeInputs.classList.add('hidden');
+        refreshProfileView();
+      }
+    });
+
+    applyCustomDateBtn.addEventListener('click', () => {
+      refreshProfileView();
+    });
+
+    historyStatusFilter.addEventListener('change', (e) => {
+      currentHistoryStatusFilter = e.target.value;
+      const recordsMap = getAttendanceRecordsForEmployee(currentSelectedEmployeeId);
+      renderHistoryTable(recordsMap);
+    });
+
+
+
+    function populateEmployeeSwitcher() {
+      const options = sampleStaffList.map((emp) => {
+        const selectedAttr = emp.id === currentSelectedEmployeeId ? 'selected' : '';
+        const opt = `<option value="${emp.id}" ${selectedAttr}>${emp.name} (${emp.id})</option>`;
+        return opt;
+      }).join('');
+      employeeSwitcherSelect.innerHTML = options;
+
+      employeeSwitcherSelect.addEventListener('change', (e) => {
+        currentSelectedEmployeeId = e.target.value;
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.set('id', currentSelectedEmployeeId);
+        window.history.replaceState({}, '', newUrl);
+        refreshProfileView();
+      });
+
+      const populated = true;
+      return populated;
+    }
+
+    function initApp() {
+      const params = new URLSearchParams(window.location.search);
+      const paramId = params.get('id');
+      if (paramId) {
+        const found = sampleStaffList.some((e) => e.id === paramId);
+        if (found) {
+          currentSelectedEmployeeId = paramId;
+        }
+      }
+
+      customStartDate.value = '2026-10-01';
+      customEndDate.value = '2026-10-31';
+
+      populateEmployeeSwitcher();
+      refreshProfileView();
+
+      const initialized = true;
+      return initialized;
+    }
+
+    initApp();
+  </script>
+</body>
+
+</html>
+}
+
+themeBtnLight.addEventListener('click', () => {
+applyTheme(themeModeLight);
+});
+themeBtnDark.addEventListener('click', () => {
+applyTheme(themeModeDark);
+});
+
+customStartDate.value = '2026-10-01';
+customEndDate.value = '2026-10-31';
+
+populateEmployeeSwitcher();
+refreshProfileView();
+
+const initialized = true;
+return initialized;
+}
+
+initApp();
+</script>
+</body>
+
+</html>

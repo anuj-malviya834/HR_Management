@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HR Management — Employee Attendance</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    input[type="time"]::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      opacity: 0.6;
+    }
+    input[type="time"]::-webkit-calendar-picker-indicator:hover {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body class="bg-neutral-50 text-neutral-800 min-h-screen flex flex-col">
+
+  <header class="bg-white border-b border-neutral-200 sticky top-0 z-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-14">
+        
+        <div class="flex items-center space-x-3">
+          <div class="w-7 h-7 bg-neutral-900 rounded flex items-center justify-center text-white font-bold text-xs tracking-wider">
+            HR
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="font-semibold text-sm text-neutral-900 tracking-tight">HR Management</span>
+            <span class="text-neutral-300">/</span>
+            <span class="text-xs font-medium text-neutral-500">Employee Attendance</span>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-2.5">
+          <div class="w-7 h-7 rounded-full bg-neutral-200 border border-neutral-300 text-neutral-700 flex items-center justify-center text-xs font-semibold">
+            SJ
+          </div>
+          <div class="text-left hidden md:block">
+            <div class="text-xs font-medium text-neutral-900 leading-none">Sarah Jenkins</div>
+            <div class="text-[11px] text-neutral-500 leading-tight mt-0.5">HR Administrator</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-5">
+
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-2">
+      <div>
+        <h1 class="text-xl font-semibold text-neutral-900 tracking-tight">Daily Office Attendance</h1>
+        <div class="flex items-center gap-2 mt-1">
+          <p id="displaySelectedDate" class="text-xs text-neutral-500 font-medium"></p>
+          <span class="text-neutral-300">•</span>
+          <span id="completionBadge" class="text-[11px] px-2 py-0.5 rounded font-medium bg-neutral-100 text-neutral-600 border border-neutral-200"></span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button id="markAllPresentBtn" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-neutral-50 text-neutral-700 border border-neutral-200 rounded text-xs font-medium transition shadow-xs">
+          <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span>Mark All Present</span>
+        </button>
+        <button id="resetAttendanceBtn" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-neutral-50 text-neutral-700 border border-neutral-200 rounded text-xs font-medium transition shadow-xs">
+          <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>Reset Day</span>
+        </button>
+      </div>
+    </div>
+
+    <section class="bg-white border border-neutral-200 rounded-md p-3 shadow-xs">
+      <div class="grid grid-cols-2 sm:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-neutral-200">
+        
+        <div class="px-4 py-2 sm:py-0">
+          <div class="text-[11px] font-medium text-neutral-500 uppercase tracking-wider">Total Staff</div>
+          <div class="mt-1 flex items-baseline gap-2">
+            <span id="statTotal" class="text-2xl font-semibold text-neutral-900 tabular-nums">0</span>
+            <span class="text-xs text-neutral-400 font-normal">employees</span>
+          </div>
+        </div>
+
+        <div class="px-4 py-2 sm:py-0">
+          <div class="text-[11px] font-medium text-neutral-500 uppercase tracking-wider flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Present</span>
+          </div>
+          <div class="mt-1 flex items-baseline gap-2">
+            <span id="statPresent" class="text-2xl font-semibold text-neutral-900 tabular-nums">0</span>
+            <span id="statPresentPercent" class="text-xs text-emerald-600 font-medium">0%</span>
+          </div>
+        </div>
+
+        <div class="px-4 py-2 sm:py-0">
+          <div class="text-[11px] font-medium text-neutral-500 uppercase tracking-wider flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+            <span>Absent</span>
+          </div>
+          <div class="mt-1 flex items-baseline gap-2">
+            <span id="statAbsent" class="text-2xl font-semibold text-neutral-900 tabular-nums">0</span>
+            <span id="statAbsentPercent" class="text-xs text-rose-600 font-medium">0%</span>
+          </div>
+        </div>
+
+        <div class="px-4 py-2 sm:py-0">
+          <div class="text-[11px] font-medium text-neutral-500 uppercase tracking-wider flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-neutral-400"></span>
+            <span>Not Marked</span>
+          </div>
+          <div class="mt-1 flex items-baseline gap-2">
+            <span id="statUnmarked" class="text-2xl font-semibold text-neutral-900 tabular-nums">0</span>
+            <span id="statUnmarkedPercent" class="text-xs text-neutral-500 font-medium">0%</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="bg-white border border-neutral-200 rounded-md p-3 shadow-xs space-y-3">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+        
+        <div class="flex flex-wrap items-center gap-2">
+          
+          <div class="flex items-center border border-neutral-200 rounded bg-white px-2 py-1 shadow-xs">
+            <span class="text-xs text-neutral-500 font-medium mr-2">Date:</span>
+            <input type="date" id="datePicker" class="text-xs text-neutral-800 font-medium focus:outline-none bg-transparent cursor-pointer">
+          </div>
+
+          <button id="todayBtn" class="px-2.5 py-1 text-xs font-medium text-neutral-700 bg-neutral-100 hover:bg-neutral-200 border border-neutral-200 rounded transition">
+            Today
+          </button>
+
+          <div class="h-4 w-px bg-neutral-200 mx-1 hidden sm:block"></div>
+
+          <div class="relative min-w-[220px]">
+            <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+              <svg class="h-3.5 w-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input type="text" id="searchInput" placeholder="Search by name or ID..." class="w-full pl-8 pr-7 py-1 text-xs border border-neutral-200 rounded bg-white text-neutral-800 placeholder-neutral-400 focus:outline-none focus:border-neutral-400 transition">
+            <button id="clearSearchBtn" class="absolute inset-y-0 right-0 pr-2 flex items-center text-neutral-400 hover:text-neutral-600 hidden">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="flex items-center border border-neutral-200 rounded bg-white px-2 py-1 shadow-xs">
+            <span class="text-xs text-neutral-500 font-medium mr-1.5">Dept:</span>
+            <select id="departmentFilter" class="text-xs text-neutral-800 font-medium bg-transparent focus:outline-none cursor-pointer">
+              <option value="ALL">All Departments</option>
+              <option value="Engineering">Engineering</option>
+              <option value="Marketing">Marketing</option>
+              <option value="Sales">Sales</option>
+              <option value="HR">HR</option>
+              <option value="Operations">Operations</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div class="flex items-center gap-1 border-t lg:border-t-0 pt-2 lg:pt-0 border-neutral-100">
+          <span class="text-xs text-neutral-500 font-medium mr-1.5">Status:</span>
+          <div class="inline-flex rounded-md p-0.5 bg-neutral-100 border border-neutral-200 text-xs font-medium">
+            <button data-status-filter="ALL" class="status-filter-btn px-2.5 py-1 rounded text-neutral-900 bg-white shadow-xs font-medium transition">All</button>
+            <button data-status-filter="PRESENT" class="status-filter-btn px-2.5 py-1 rounded text-neutral-600 hover:text-neutral-900 transition">Present</button>
+            <button data-status-filter="ABSENT" class="status-filter-btn px-2.5 py-1 rounded text-neutral-600 hover:text-neutral-900 transition">Absent</button>
+            <button data-status-filter="NOT_MARKED" class="status-filter-btn px-2.5 py-1 rounded text-neutral-600 hover:text-neutral-900 transition">Not Marked</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="bg-white border border-neutral-200 rounded-md shadow-xs overflow-hidden">
+      
+      <div class="px-4 py-2.5 border-b border-neutral-200 flex items-center justify-between bg-neutral-50/60">
+        <div class="flex items-center gap-2">
+          <h2 class="text-xs font-semibold text-neutral-900 uppercase tracking-wider">Employee Roster</h2>
+          <span id="filteredCountBadge" class="text-[11px] px-2 py-0.2 rounded-full bg-neutral-200/80 text-neutral-700 font-medium">0 shown</span>
+        </div>
+        <div class="text-xs text-neutral-500 flex items-center gap-1.5">
+          <span>Check-in auto-saves on modification</span>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b border-neutral-200 bg-neutral-50/80 text-[11px] font-semibold text-neutral-500 uppercase tracking-wider">
+              <th scope="col" class="py-2.5 px-4 w-28">Emp ID</th>
+              <th scope="col" class="py-2.5 px-4">Employee</th>
+              <th scope="col" class="py-2.5 px-4 w-36">Department</th>
+              <th scope="col" class="py-2.5 px-4 w-48">Designation</th>
+              <th scope="col" class="py-2.5 px-4 w-32">Status</th>
+              <th scope="col" class="py-2.5 px-4 w-36">Check-in Time</th>
+              <th scope="col" class="py-2.5 px-4 w-44 text-right">Attendance Action</th>
+            </tr>
+          </thead>
+          <tbody id="employeeTableBody" class="divide-y divide-neutral-200 text-xs">
+          </tbody>
+        </table>
+      </div>
+
+      <div id="emptyState" class="hidden py-12 px-4 text-center">
+        <div class="w-10 h-10 rounded-full bg-neutral-100 border border-neutral-200 flex items-center justify-center mx-auto text-neutral-400">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <h3 class="mt-3 text-xs font-semibold text-neutral-800">No matching employees found</h3>
+        <p class="mt-1 text-xs text-neutral-500 max-w-sm mx-auto">There are no staff members matching your current search query or applied department and status filters.</p>
+        <button id="clearFiltersBtn" class="mt-3 inline-flex items-center px-3 py-1 bg-white hover:bg-neutral-50 border border-neutral-200 rounded text-xs font-medium text-neutral-700 transition">
+          Reset Search & Filters
+        </button>
+      </div>
+
+      <div class="px-4 py-2 border-t border-neutral-200 bg-neutral-50/50 flex flex-col sm:flex-row items-center justify-between text-[11px] text-neutral-500 gap-2">
+        <div>
+          Showing <span id="tableShowingCount" class="font-medium text-neutral-700">0</span> of <span id="tableTotalCount" class="font-medium text-neutral-700">0</span> employees
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="inline-flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span>Present</span>
+          </span>
+          <span class="inline-flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+            <span>Absent</span>
+          </span>
+          <span class="inline-flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-neutral-400"></span>
+            <span>Not Marked</span>
+          </span>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer class="bg-white border-t border-neutral-200 py-3 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-neutral-500 gap-2">
+      <div>HR Management System &bull; Internal Attendance Dashboard</div>
+      <div>Acme Corporation Operations &bull; Staff Registry v2.4</div>
+    </div>
+  </footer>
+
+  <div id="confirmModal" class="fixed inset-0 z-50 bg-neutral-900/40 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-md border border-neutral-200 shadow-md max-w-md w-full p-5 space-y-4">
+      <div class="flex items-start gap-3">
+        <div id="confirmModalIconContainer" class="w-8 h-8 rounded bg-neutral-100 flex items-center justify-center shrink-0">
+          <svg id="confirmModalIcon" class="w-4 h-4 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <div>
+          <h3 id="confirmModalTitle" class="text-sm font-semibold text-neutral-900">Confirm Action</h3>
+          <p id="confirmModalMessage" class="mt-1 text-xs text-neutral-600 leading-relaxed"></p>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-neutral-100">
+        <button id="confirmModalCancelBtn" class="px-3 py-1.5 text-xs font-medium text-neutral-700 hover:bg-neutral-100 rounded border border-neutral-200 transition">
+          Cancel
+        </button>
+        <button id="confirmModalActionBtn" class="px-3 py-1.5 text-xs font-medium text-white rounded transition shadow-xs">
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="fixed bottom-5 right-5 z-50 bg-neutral-900 text-white px-3.5 py-2 rounded shadow-md text-xs font-medium flex items-center gap-2 transform transition-all duration-200 translate-y-12 opacity-0 pointer-events-none">
+    <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+    </svg>
+    <span id="toastMessage"></span>
+  </div>
+
+  <script>
+    const zeroVal = 0;
+    const singleVal = 1;
+    const notFoundCode = -1;
+    const percentageMultiplier = 100;
+    const toastDurationDurationMs = 2600;
+    const toastAnimationDurationMs = 200;
+    const stringPadLength = 2;
+    const padChar = '0';
+    const defaultCheckInHour = 9;
+    const defaultCheckInMinute = 0;
+    const dateYearIndex = 0;
+    const dateMonthIndex = 1;
+    const dateDayIndex = 2;
+    const initialModuloTrio = 3;
+    const initialModuloSeptet = 7;
+    const storageKeyPrefix = 'hrm_attendance_record_';
+
+    const statusAll = 'ALL';
+    const statusPresent = 'PRESENT';
+    const statusAbsent = 'ABSENT';
+    const statusNotMarked = 'NOT_MARKED';
+
+    const employeesData = [
+      {
+        id: 'EMP-1001',
+        name: 'Sarah Chen',
+        email: 'sarah.chen@acme.inc',
+        department: 'Engineering',
+        designation: 'Staff Backend Engineer',
+        initials: 'SC',
+        defaultTime: '08:45'
+      },
+      {
+        id: 'EMP-1002',
+        name: 'Marcus Vance',
+        email: 'marcus.vance@acme.inc',
+        department: 'Engineering',
+        designation: 'Senior DevOps Specialist',
+        initials: 'MV',
+        defaultTime: '09:02'
+      },
+      {
+        id: 'EMP-1003',
+        name: 'Elena Rostova',
+        email: 'elena.rostova@acme.inc',
+        department: 'Engineering',
+        designation: 'Frontend Engineer',
+        initials: 'ER',
+        defaultTime: '09:15'
+      },
+      {
+        id: 'EMP-1004',
+        name: 'David Kim',
+        email: 'david.kim@acme.inc',
+        department: 'Marketing',
+        designation: 'Growth Marketing Manager',
+        initials: 'DK',
+        defaultTime: '08:55'
+      },
+      {
+        id: 'EMP-1005',
+        name: 'Rachel Green',
+        email: 'rachel.green@acme.inc',
+        department: 'Marketing',
+        designation: 'Content Strategist',
+        initials: 'RG',
+        defaultTime: '09:10'
+      },
+      {
+        id: 'EMP-1006',
+        name: 'James Wilson',
+        email: 'james.wilson@acme.inc',
+        department: 'Sales',
+        designation: 'Enterprise Account Exec',
+        initials: 'JW',
+        defaultTime: '09:20'
+      },
+      {
+        id: 'EMP-1007',
+        name: 'Priya Patel',
+        email: 'priya.patel@acme.inc',
+        department: 'Sales',
+        designation: 'Senior Sales Representative',
+        initials: 'PP',
+        defaultTime: '08:50'
+      },
+      {
+        id: 'EMP-1008',
+        name: 'Michael Torres',
+        email: 'michael.torres@acme.inc',
+        department: 'HR',
+        designation: 'Talent Acquisition Lead',
+        initials: 'MT',
+        defaultTime: '09:05'
+      },
+      {
+        id: 'EMP-1009',
+        name: 'Amanda Brooks',
+        email: 'amanda.brooks@acme.inc',
+        department: 'HR',
+        designation: 'People Operations Partner',
+        initials: 'AB',
+        defaultTime: '08:40'
+      },
+      {
+        id: 'EMP-1010',
+        name: 'Thomas Clark',
+        email: 'thomas.clark@acme.inc',
+        department: 'Operations',
+        designation: 'Senior Supply Chain Analyst',
+        initials: 'TC',
+        defaultTime: '09:12'
+      },
+      {
+        id: 'EMP-1011',
+        name: 'Jessica Taylor',
+        email: 'jessica.taylor@acme.inc',
+        department: 'Operations',
+        designation: 'Facilities Coordinator',
+        initials: 'JT',
+        defaultTime: '08:35'
+      },
+      {
+        id: 'EMP-1012',
+        name: 'Robert Martinez',
+        email: 'robert.martinez@acme.inc',
+        department: 'Engineering',
+        designation: 'QA Automation Engineer',
+        initials: 'RM',
+        defaultTime: '09:25'
+      }
+    ];
+
+    let currentSelectedDate = '';
+    let currentSearchTerm = '';
+    let currentDepartmentFilter = statusAll;
+    let currentStatusFilter = statusAll;
+    let currentAttendanceMap = {};
+    let activeModalConfirmCallback = null;
+    let toastTimeoutIdentifier = null;
+
+    const datePickerElement = document.getElementById('datePicker');
+    const todayBtnElement = document.getElementById('todayBtn');
+    const displaySelectedDateElement = document.getElementById('displaySelectedDate');
+    const completionBadgeElement = document.getElementById('completionBadge');
+    const searchInputElement = document.getElementById('searchInput');
+    const clearSearchBtnElement = document.getElementById('clearSearchBtn');
+    const departmentFilterElement = document.getElementById('departmentFilter');
+    const statusFilterButtons = document.querySelectorAll('.status-filter-btn');
+    const employeeTableBodyElement = document.getElementById('employeeTableBody');
+    const emptyStateElement = document.getElementById('emptyState');
+    const clearFiltersBtnElement = document.getElementById('clearFiltersBtn');
+    const markAllPresentBtnElement = document.getElementById('markAllPresentBtn');
+    const resetAttendanceBtnElement = document.getElementById('resetAttendanceBtn');
+
+    const statTotalElement = document.getElementById('statTotal');
+    const statPresentElement = document.getElementById('statPresent');
+    const statPresentPercentElement = document.getElementById('statPresentPercent');
+    const statAbsentElement = document.getElementById('statAbsent');
+    const statAbsentPercentElement = document.getElementById('statAbsentPercent');
+    const statUnmarkedElement = document.getElementById('statUnmarked');
+    const statUnmarkedPercentElement = document.getElementById('statUnmarkedPercent');
+
+    const filteredCountBadgeElement = document.getElementById('filteredCountBadge');
+    const tableShowingCountElement = document.getElementById('tableShowingCount');
+    const tableTotalCountElement = document.getElementById('tableTotalCount');
+
+    const confirmModalElement = document.getElementById('confirmModal');
+    const confirmModalTitleElement = document.getElementById('confirmModalTitle');
+    const confirmModalMessageElement = document.getElementById('confirmModalMessage');
+    const confirmModalCancelBtnElement = document.getElementById('confirmModalCancelBtn');
+    const confirmModalActionBtnElement = document.getElementById('confirmModalActionBtn');
+
+    const toastElement = document.getElementById('toast');
+    const toastMessageElement = document.getElementById('toastMessage');
+
+    function getPaddedString(num) {
+      const stringified = String(num).padStart(stringPadLength, padChar);
+      return stringified;
+    }
+
+    function getFormattedIsoDate(dateObj) {
+      const year = dateObj.getFullYear();
+      const month = getPaddedString(dateObj.getMonth() + singleVal);
+      const day = getPaddedString(dateObj.getDate());
+      const isoFormatted = `${year}-${month}-${day}`;
+      return isoFormatted;
+    }
+
+    function getReadableDate(isoString) {
+      const parts = isoString.split('-');
+      const year = Number(parts[dateYearIndex]);
+      const monthIndex = Number(parts[dateMonthIndex]) - singleVal;
+      const day = Number(parts[dateDayIndex]);
+      const dateInstance = new Date(year, monthIndex, day);
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const formatted = dateInstance.toLocaleDateString('en-US', options);
+      return formatted;
+    }
+
+    function getCurrentTimeString() {
+      const now = new Date();
+      const hours = getPaddedString(now.getHours());
+      const minutes = getPaddedString(now.getMinutes());
+      const timeStr = `${hours}:${minutes}`;
+      return timeStr;
+    }
+
+    function getDefaultTimeString() {
+      const hours = getPaddedString(defaultCheckInHour);
+      const minutes = getPaddedString(defaultCheckInMinute);
+      const timeStr = `${hours}:${minutes}`;
+      return timeStr;
+    }
+
+    function getStorageKey(dateString) {
+      const generatedKey = storageKeyPrefix + dateString;
+      return generatedKey;
+    }
+
+    function loadAttendanceForDate(dateString) {
+      const key = getStorageKey(dateString);
+      const rawStoredData = localStorage.getItem(key);
+      if (rawStoredData) {
+        const parsedMap = JSON.parse(rawStoredData);
+        return parsedMap;
+      }
+
+      const freshMap = {};
+      const todayIso = getFormattedIsoDate(new Date());
+      const isCurrentDay = dateString === todayIso;
+
+      employeesData.forEach((emp, index) => {
+        if (isCurrentDay) {
+          const moduloThree = index % initialModuloTrio;
+          if (moduloThree === zeroVal) {
+            freshMap[emp.id] = {
+              status: statusPresent,
+              checkInTime: emp.defaultTime
+            };
+          } else if (moduloThree === singleVal) {
+            freshMap[emp.id] = {
+              status: statusNotMarked,
+              checkInTime: ''
+            };
+          } else {
+            const moduloSeven = index % initialModuloSeptet;
+            if (moduloSeven === zeroVal) {
+              freshMap[emp.id] = {
+                status: statusAbsent,
+                checkInTime: ''
+              };
+            } else {
+              freshMap[emp.id] = {
+                status: statusPresent,
+                checkInTime: emp.defaultTime
+              };
+            }
+          }
+        } else {
+          freshMap[emp.id] = {
+            status: statusNotMarked,
+            checkInTime: ''
+          };
+        }
+      });
+
+      saveAttendanceForDate(dateString, freshMap);
+      return freshMap;
+    }
+
+    function saveAttendanceForDate(dateString, attendanceMap) {
+      const key = getStorageKey(dateString);
+      const serialized = JSON.stringify(attendanceMap);
+      localStorage.setItem(key, serialized);
+      const successVal = true;
+      return successVal;
+    }
+
+    function showToast(message) {
+      if (toastTimeoutIdentifier) {
+        clearTimeout(toastTimeoutIdentifier);
+      }
+      toastMessageElement.textContent = message;
+      toastElement.classList.remove('translate-y-12', 'opacity-0', 'pointer-events-none');
+      toastElement.classList.add('translate-y-0', 'opacity-100');
+
+      toastTimeoutIdentifier = setTimeout(() => {
+        toastElement.classList.remove('translate-y-0', 'opacity-100');
+        toastElement.classList.add('translate-y-12', 'opacity-0', 'pointer-events-none');
+      }, toastDurationDurationMs);
+
+      const executed = true;
+      return executed;
+    }
+
+    function openConfirmModal(title, message, confirmText, isDestructive, onConfirm) {
+      confirmModalTitleElement.textContent = title;
+      confirmModalMessageElement.textContent = message;
+      confirmModalActionBtnElement.textContent = confirmText;
+
+      if (isDestructive) {
+        confirmModalActionBtnElement.className = 'px-3 py-1.5 text-xs font-medium text-white bg-rose-600 hover:bg-rose-700 rounded transition shadow-xs';
+      } else {
+        confirmModalActionBtnElement.className = 'px-3 py-1.5 text-xs font-medium text-white bg-neutral-900 hover:bg-neutral-800 rounded transition shadow-xs';
+      }
+
+      activeModalConfirmCallback = onConfirm;
+      confirmModalElement.classList.remove('hidden');
+      const opened = true;
+      return opened;
+    }
+
+    function closeConfirmModal() {
+      confirmModalElement.classList.add('hidden');
+      activeModalConfirmCallback = null;
+      const closed = true;
+      return closed;
+    }
+
+    function calculatePercentage(value, total) {
+      if (total === zeroVal) {
+        const zeroReturn = zeroVal;
+        return zeroReturn;
+      }
+      const calculatedPercent = Math.round((value / total) * percentageMultiplier);
+      return calculatedPercent;
+    }
+
+    function updateSummaryMetrics() {
+      const totalCount = employeesData.length;
+      let presentCount = zeroVal;
+      let absentCount = zeroVal;
+      let unmarkedCount = zeroVal;
+
+      employeesData.forEach((emp) => {
+        const record = currentAttendanceMap[emp.id];
+        const status = record ? record.status : statusNotMarked;
+        if (status === statusPresent) {
+          presentCount += singleVal;
+        } else if (status === statusAbsent) {
+          absentCount += singleVal;
+        } else {
+          unmarkedCount += singleVal;
+        }
+      });
+
+      const presentPercent = calculatePercentage(presentCount, totalCount);
+      const absentPercent = calculatePercentage(absentCount, totalCount);
+      const unmarkedPercent = calculatePercentage(unmarkedCount, totalCount);
+      const markedCount = presentCount + absentCount;
+
+      statTotalElement.textContent = String(totalCount);
+      statPresentElement.textContent = String(presentCount);
+      statPresentPercentElement.textContent = `${presentPercent}%`;
+
+      statAbsentElement.textContent = String(absentCount);
+      statAbsentPercentElement.textContent = `${absentPercent}%`;
+
+      statUnmarkedElement.textContent = String(unmarkedCount);
+      statUnmarkedPercentElement.textContent = `${unmarkedPercent}%`;
+
+      tableTotalCountElement.textContent = String(totalCount);
+
+      if (markedCount === totalCount) {
+        completionBadgeElement.textContent = 'All Marked (Complete)';
+        completionBadgeElement.className = 'text-[11px] px-2 py-0.5 rounded font-medium bg-emerald-50 text-emerald-700 border border-emerald-200';
+      } else if (markedCount === zeroVal) {
+        completionBadgeElement.textContent = 'Not Started';
+        completionBadgeElement.className = 'text-[11px] px-2 py-0.5 rounded font-medium bg-neutral-100 text-neutral-600 border border-neutral-200';
+      } else {
+        completionBadgeElement.textContent = `${markedCount} of ${totalCount} Marked • In Progress`;
+        completionBadgeElement.className = 'text-[11px] px-2 py-0.5 rounded font-medium bg-amber-50 text-amber-700 border border-amber-200';
+      }
+
+      const summaryObj = {
+        total: totalCount,
+        present: presentCount,
+        absent: absentCount,
+        unmarked: unmarkedCount
+      };
+      return summaryObj;
+    }
+
+    function filterEmployeesList() {
+      const normalizedQuery = currentSearchTerm.trim().toLowerCase();
+      const filtered = employeesData.filter((emp) => {
+        const matchesDepartment = (currentDepartmentFilter === statusAll) || (emp.department === currentDepartmentFilter);
+        
+        const record = currentAttendanceMap[emp.id];
+        const status = record ? record.status : statusNotMarked;
+        const matchesStatus = (currentStatusFilter === statusAll) || (status === currentStatusFilter);
+
+        let matchesSearch = true;
+        if (normalizedQuery.length > zeroVal) {
+          const nameMatch = emp.name.toLowerCase().indexOf(normalizedQuery) !== notFoundCode;
+          const idMatch = emp.id.toLowerCase().indexOf(normalizedQuery) !== notFoundCode;
+          const designationMatch = emp.designation.toLowerCase().indexOf(normalizedQuery) !== notFoundCode;
+          matchesSearch = nameMatch || idMatch || designationMatch;
+        }
+
+        const isIncluded = matchesDepartment && matchesStatus && matchesSearch;
+        return isIncluded;
+      });
+
+      return filtered;
+    }
+
+    function renderStatusBadge(status) {
+      if (status === statusPresent) {
+        const presentHtml = `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span>Present</span>
+        </span>`;
+        return presentHtml;
+      }
+      if (status === statusAbsent) {
+        const absentHtml = `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-rose-50 text-rose-700 border border-rose-200">
+          <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+          <span>Absent</span>
+        </span>`;
+        return absentHtml;
+      }
+      const unmarkedHtml = `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-neutral-100 text-neutral-600 border border-neutral-200">
+        <span class="w-1.5 h-1.5 rounded-full bg-neutral-400"></span>
+        <span>Not Marked</span>
+      </span>`;
+      return unmarkedHtml;
+    }
+
+    function renderTable() {
+      const visibleEmployees = filterEmployeesList();
+      employeeTableBodyElement.innerHTML = '';
+
+      filteredCountBadgeElement.textContent = `${visibleEmployees.length} shown`;
+      tableShowingCountElement.textContent = String(visibleEmployees.length);
+
+      if (visibleEmployees.length === zeroVal) {
+        emptyStateElement.classList.remove('hidden');
+        const emptyReturn = zeroVal;
+        return emptyReturn;
+      }
+
+      emptyStateElement.classList.add('hidden');
+
+      const rowsHtmlArray = visibleEmployees.map((emp) => {
+        const record = currentAttendanceMap[emp.id] || { status: statusNotMarked, checkInTime: '' };
+        const status = record.status;
+        const checkInTime = record.checkInTime || '';
+
+        const isPresent = status === statusPresent;
+        const isAbsent = status === statusAbsent;
+
+        const presentBtnClass = isPresent
+          ? 'bg-emerald-700 text-white border-emerald-700 font-semibold shadow-xs'
+          : 'bg-white hover:bg-emerald-50 text-neutral-600 hover:text-emerald-700 border-neutral-200';
+
+        const absentBtnClass = isAbsent
+          ? 'bg-rose-700 text-white border-rose-700 font-semibold shadow-xs'
+          : 'bg-white hover:bg-rose-50 text-neutral-600 hover:text-rose-700 border-neutral-200';
+
+        let timeColumnContent = '';
+        if (isPresent) {
+          timeColumnContent = `
+            <div class="inline-flex items-center gap-1">
+              <input type="time" data-emp-id="${emp.id}" value="${checkInTime}" class="checkin-time-input px-2 py-0.5 text-xs border border-neutral-300 rounded font-mono text-neutral-800 bg-white focus:outline-none focus:border-neutral-500 shadow-2xs">
+            </div>
+          `;
+        } else if (isAbsent) {
+          timeColumnContent = `<span class="text-neutral-400 font-mono text-xs pl-2">—</span>`;
+        } else {
+          timeColumnContent = `<span class="text-neutral-400 text-xs italic pl-1">Awaiting mark</span>`;
+        }
+
+        const rowMarkup = `
+          <tr class="hover:bg-neutral-50/70 transition border-b border-neutral-200/80">
+            <td class="py-2.5 px-4 font-mono text-neutral-600 font-medium">
+              <span class="bg-neutral-100 text-neutral-700 px-1.5 py-0.5 rounded border border-neutral-200">${emp.id}</span>
+            </td>
+            <td class="py-2.5 px-4">
+              <div class="flex items-center gap-2.5">
+                <div class="w-6 h-6 rounded-full bg-neutral-100 border border-neutral-200 text-neutral-600 flex items-center justify-center text-[10px] font-semibold shrink-0">
+                  ${emp.initials}
+                </div>
+                <div>
+                  <div class="font-medium text-neutral-900 leading-snug">${emp.name}</div>
+                  <div class="text-[11px] text-neutral-400 font-normal leading-none">${emp.email}</div>
+                </div>
+              </div>
+            </td>
+            <td class="py-2.5 px-4 text-neutral-700 font-medium">${emp.department}</td>
+            <td class="py-2.5 px-4 text-neutral-500 font-normal">${emp.designation}</td>
+            <td class="py-2.5 px-4">${renderStatusBadge(status)}</td>
+            <td class="py-2.5 px-4">${timeColumnContent}</td>
+            <td class="py-2.5 px-4 text-right">
+              <div class="inline-flex rounded shadow-2xs">
+                <button data-action="mark-present" data-emp-id="${emp.id}" class="action-btn px-2.5 py-1 text-xs border rounded-l transition ${presentBtnClass}">
+                  Present
+                </button>
+                <button data-action="mark-absent" data-emp-id="${emp.id}" class="action-btn px-2.5 py-1 text-xs border-t border-b border-r rounded-r transition -ml-px ${absentBtnClass}">
+                  Absent
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+        return rowMarkup;
+      });
+
+      employeeTableBodyElement.innerHTML = rowsHtmlArray.join('');
+      attachTableEventListeners();
+      const renderedCount = visibleEmployees.length;
+      return renderedCount;
+    }
+
+    function setEmployeeAttendance(empId, desiredStatus) {
+      const existing = currentAttendanceMap[empId] || { status: statusNotMarked, checkInTime: '' };
+      const currentStatus = existing.status;
+
+      let newStatus = desiredStatus;
+      let newTime = existing.checkInTime;
+
+      if (currentStatus === desiredStatus) {
+        newStatus = statusNotMarked;
+        newTime = '';
+      } else {
+        if (desiredStatus === statusPresent) {
+          if (!newTime || newTime.length === zeroVal) {
+            newTime = getCurrentTimeString();
+          }
+        } else if (desiredStatus === statusAbsent) {
+          newTime = '';
+        }
+      }
+
+      currentAttendanceMap[empId] = {
+        status: newStatus,
+        checkInTime: newTime
+      };
+
+      saveAttendanceForDate(currentSelectedDate, currentAttendanceMap);
+      updateSummaryMetrics();
+      renderTable();
+
+      const matchedEmployee = employeesData.find((emp) => {
+        const found = emp.id === empId;
+        return found;
+      });
+      const employeeName = matchedEmployee ? matchedEmployee.name : empId;
+
+      if (newStatus === statusPresent) {
+        showToast(`Marked ${employeeName} as Present (${newTime})`);
+      } else if (newStatus === statusAbsent) {
+        showToast(`Marked ${employeeName} as Absent`);
+      } else {
+        showToast(`Cleared attendance status for ${employeeName}`);
+      }
+
+      const updated = true;
+      return updated;
+    }
+
+    function updateEmployeeCheckInTime(empId, newTimeValue) {
+      if (currentAttendanceMap[empId]) {
+        currentAttendanceMap[empId].checkInTime = newTimeValue;
+        saveAttendanceForDate(currentSelectedDate, currentAttendanceMap);
+        showToast(`Updated check-in time to ${newTimeValue}`);
+      }
+      const updated = true;
+      return updated;
+    }
+
+    function attachTableEventListeners() {
+      const actionButtons = employeeTableBodyElement.querySelectorAll('.action-btn');
+      actionButtons.forEach((btn) => {
+        btn.addEventListener('click', (event) => {
+          const action = btn.getAttribute('data-action');
+          const empId = btn.getAttribute('data-emp-id');
+          if (action === 'mark-present') {
+            setEmployeeAttendance(empId, statusPresent);
+          } else if (action === 'mark-absent') {
+            setEmployeeAttendance(empId, statusAbsent);
+          }
+        });
+      });
+
+      const timeInputs = employeeTableBodyElement.querySelectorAll('.checkin-time-input');
+      timeInputs.forEach((input) => {
+        input.addEventListener('change', (event) => {
+          const empId = input.getAttribute('data-emp-id');
+          const val = input.value;
+          updateEmployeeCheckInTime(empId, val);
+        });
+      });
+
+      const attached = true;
+      return attached;
+    }
+
+    function handleDateChange(newIsoDate) {
+      currentSelectedDate = newIsoDate;
+      datePickerElement.value = newIsoDate;
+      displaySelectedDateElement.textContent = getReadableDate(newIsoDate);
+
+      currentAttendanceMap = loadAttendanceForDate(newIsoDate);
+      updateSummaryMetrics();
+      renderTable();
+
+      const changed = true;
+      return changed;
+    }
+
+    function markAllEmployeesPresent() {
+      const defaultTime = getDefaultTimeString();
+      employeesData.forEach((emp) => {
+        const existing = currentAttendanceMap[emp.id];
+        const existingTime = existing && existing.checkInTime && existing.checkInTime.length > zeroVal ? existing.checkInTime : defaultTime;
+        currentAttendanceMap[emp.id] = {
+          status: statusPresent,
+          checkInTime: existingTime
+        };
+      });
+
+      saveAttendanceForDate(currentSelectedDate, currentAttendanceMap);
+      updateSummaryMetrics();
+      renderTable();
+      showToast('All staff members marked Present for this day');
+      const marked = true;
+      return marked;
+    }
+
+    function resetAttendanceForSelectedDate() {
+      employeesData.forEach((emp) => {
+        currentAttendanceMap[emp.id] = {
+          status: statusNotMarked,
+          checkInTime: ''
+        };
+      });
+
+      saveAttendanceForDate(currentSelectedDate, currentAttendanceMap);
+      updateSummaryMetrics();
+      renderTable();
+      showToast('Attendance records reset to Not Marked');
+      const reset = true;
+      return reset;
+    }
+
+    datePickerElement.addEventListener('change', (event) => {
+      const val = event.target.value;
+      if (val) {
+        handleDateChange(val);
+      }
+    });
+
+    todayBtnElement.addEventListener('click', () => {
+      const todayIso = getFormattedIsoDate(new Date());
+      handleDateChange(todayIso);
+    });
+
+    searchInputElement.addEventListener('input', (event) => {
+      currentSearchTerm = event.target.value;
+      if (currentSearchTerm.length > zeroVal) {
+        clearSearchBtnElement.classList.remove('hidden');
+      } else {
+        clearSearchBtnElement.classList.add('hidden');
+      }
+      renderTable();
+    });
+
+    clearSearchBtnElement.addEventListener('click', () => {
+      searchInputElement.value = '';
+      currentSearchTerm = '';
+      clearSearchBtnElement.classList.add('hidden');
+      renderTable();
+    });
+
+    departmentFilterElement.addEventListener('change', (event) => {
+      currentDepartmentFilter = event.target.value;
+      renderTable();
+    });
+
+    statusFilterButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        statusFilterButtons.forEach((b) => {
+          b.className = 'status-filter-btn px-2.5 py-1 rounded text-neutral-600 hover:text-neutral-900 transition';
+        });
+        btn.className = 'status-filter-btn px-2.5 py-1 rounded text-neutral-900 bg-white shadow-xs font-semibold transition';
+
+        const filterValue = btn.getAttribute('data-status-filter');
+        currentStatusFilter = filterValue;
+        renderTable();
+      });
+    });
+
+    clearFiltersBtnElement.addEventListener('click', () => {
+      searchInputElement.value = '';
+      currentSearchTerm = '';
+      clearSearchBtnElement.classList.add('hidden');
+      departmentFilterElement.value = statusAll;
+      currentDepartmentFilter = statusAll;
+
+      statusFilterButtons.forEach((b) => {
+        b.className = 'status-filter-btn px-2.5 py-1 rounded text-neutral-600 hover:text-neutral-900 transition';
+      });
+      const allBtn = document.querySelector('[data-status-filter="ALL"]');
+      if (allBtn) {
+        allBtn.className = 'status-filter-btn px-2.5 py-1 rounded text-neutral-900 bg-white shadow-xs font-semibold transition';
+      }
+      currentStatusFilter = statusAll;
+
+      renderTable();
+      showToast('Filters have been cleared');
+    });
+
+    markAllPresentBtnElement.addEventListener('click', () => {
+      const dateReadable = getReadableDate(currentSelectedDate);
+      const title = 'Mark All Staff Present?';
+      const msg = `This will set all 12 employees to Present for ${dateReadable}. Check-in times will be preserved if already set, or default to 09:00 AM.`;
+      const isDestructive = false;
+      openConfirmModal(title, msg, 'Mark All Present', isDestructive, () => {
+        markAllEmployeesPresent();
+      });
+    });
+
+    resetAttendanceBtnElement.addEventListener('click', () => {
+      const dateReadable = getReadableDate(currentSelectedDate);
+      const title = 'Reset Attendance Records?';
+      const msg = `Are you sure you want to reset attendance for ${dateReadable}? All statuses will be cleared to Not Marked.`;
+      const isDestructive = true;
+      openConfirmModal(title, msg, 'Reset Day', isDestructive, () => {
+        resetAttendanceForSelectedDate();
+      });
+    });
+
+    confirmModalCancelBtnElement.addEventListener('click', () => {
+      closeConfirmModal();
+    });
+
+    confirmModalActionBtnElement.addEventListener('click', () => {
+      if (activeModalConfirmCallback) {
+        activeModalConfirmCallback();
+      }
+      closeConfirmModal();
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        if (!confirmModalElement.classList.contains('hidden')) {
+          closeConfirmModal();
+        }
+      }
+    });
+
+    function initializeApplication() {
+      const initialIsoDate = getFormattedIsoDate(new Date());
+      handleDateChange(initialIsoDate);
+      const initialized = true;
+      return initialized;
+    }
+
+    initializeApplication();
+  </script>
+</body>
+</html>
