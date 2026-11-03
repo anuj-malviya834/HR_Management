@@ -24,6 +24,59 @@ const monthNamesFull = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
+const monthNamesShort = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+];
+const monthsInQuarter = 3;
+const totalMonthsInYear = 12;
+const lastMonthOffset = 1;
+const firstDayString = '01';
+const dateSeparatorChar = '-';
+
+function getActiveMonthBoundaries() {
+  const now = new Date();
+  const yearNum = now.getFullYear();
+  const monthNum = now.getMonth() + singleVal;
+  const monthPadded = String(monthNum).padStart(stringPadLength, padChar);
+  const startIso = `${yearNum}${dateSeparatorChar}${monthPadded}${dateSeparatorChar}${firstDayString}`;
+  const lastDayDate = new Date(yearNum, monthNum, zeroVal);
+  const lastDayNum = lastDayDate.getDate();
+  const lastDayPadded = String(lastDayNum).padStart(stringPadLength, padChar);
+  const endIso = `${yearNum}${dateSeparatorChar}${monthPadded}${dateSeparatorChar}${lastDayPadded}`;
+  const boundaryObj = {
+    start: startIso,
+    end: endIso,
+  };
+  return boundaryObj;
+}
+
+function getPeriodLabels() {
+  const now = new Date();
+  const currYear = now.getFullYear();
+  const currMonthIdx = now.getMonth();
+  const currMonthName = monthNamesShort[currMonthIdx];
+  const thisMonthLabel = `This Month (${currMonthName} ${currYear})`;
+
+  let prevMonthIdx = currMonthIdx - lastMonthOffset;
+  let prevYear = currYear;
+  if (prevMonthIdx < zeroVal) {
+    prevMonthIdx = totalMonthsInYear - singleVal;
+    prevYear = currYear - singleVal;
+  }
+  const prevMonthName = monthNamesShort[prevMonthIdx];
+  const lastMonthLabel = `Last Month (${prevMonthName} ${prevYear})`;
+
+  const quarterNumber = Math.floor(currMonthIdx / monthsInQuarter) + singleVal;
+  const thisQuarterLabel = `This Quarter (Q${quarterNumber} ${currYear})`;
+
+  const labelsObj = {
+    thisMonth: thisMonthLabel,
+    lastMonth: lastMonthLabel,
+    thisQuarter: thisQuarterLabel,
+  };
+  return labelsObj;
+}
 
 function formatHireDate(dateStr) {
   if (!dateStr) {
@@ -77,8 +130,20 @@ export default function EmployeeProfile({
   onEditEmployee,
 }) {
   const [selectedPeriod, setSelectedPeriod] = useState('THIS_MONTH');
-  const [customStartDate, setCustomStartDate] = useState('2026-10-01');
-  const [customEndDate, setCustomEndDate] = useState('2026-10-31');
+  const [customStartDate, setCustomStartDate] = useState(() => {
+    const boundaries = getActiveMonthBoundaries();
+    const initialStart = boundaries.start;
+    return initialStart;
+  });
+  const [customEndDate, setCustomEndDate] = useState(() => {
+    const boundaries = getActiveMonthBoundaries();
+    const initialEnd = boundaries.end;
+    return initialEnd;
+  });
+  const periodLabels = useMemo(() => {
+    const labels = getPeriodLabels();
+    return labels;
+  }, []);
   const [statusFilter, setStatusFilter] = useState(statusAll);
   const [historyRecords, setHistoryRecords] = useState([]);
   const [metrics, setMetrics] = useState({
@@ -410,9 +475,9 @@ export default function EmployeeProfile({
                 onChange={(e) => setSelectedPeriod(e.target.value)}
                 className="text-xs text-neutral-800 dark:text-neutral-200 font-medium bg-transparent focus:outline-none cursor-pointer"
               >
-                <option value="THIS_MONTH">This Month (Oct 2026)</option>
-                <option value="LAST_MONTH">Last Month (Sep 2026)</option>
-                <option value="THIS_QUARTER">This Quarter (Q3-Q4 2026)</option>
+                <option value="THIS_MONTH">{periodLabels.thisMonth}</option>
+                <option value="LAST_MONTH">{periodLabels.lastMonth}</option>
+                <option value="THIS_QUARTER">{periodLabels.thisQuarter}</option>
                 <option value="CUSTOM">Custom Range</option>
               </select>
             </div>

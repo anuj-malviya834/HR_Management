@@ -24,10 +24,12 @@ minutes_in_hour = 60
 half_day_multiplier = 0.5
 saturday_weekday_idx = 5
 sunday_weekday_idx = 6
-default_hist_year = 2026
-october_num = 10
-september_num = 9
-august_num = 8
+first_day_of_month = 1
+month_days_tuple_index = 1
+january_month_num = 1
+december_month_num = 12
+quarter_span_months = 3
+two_months_offset = 2
 default_pad_width = 2
 default_time_value = "09:00"
 default_empty_time = "—"
@@ -417,21 +419,34 @@ class EmployeeAttendanceHistoryView(APIView):
         start_param = request.query_params.get("start_date", None)
         end_param = request.query_params.get("end_date", None)
 
+        today_date = date.today()
+        curr_year = today_date.year
+        curr_month = today_date.month
+
         if period == "LAST_MONTH":
-            start_date = date(default_hist_year, september_num, single_increment)
-            days_count = calendar.monthrange(default_hist_year, september_num)[single_increment]
-            end_date = date(default_hist_year, september_num, days_count)
+            if curr_month == january_month_num:
+                prev_month = december_month_num
+                prev_year = curr_year - single_increment
+            else:
+                prev_month = curr_month - single_increment
+                prev_year = curr_year
+            start_date = date(prev_year, prev_month, first_day_of_month)
+            days_count = calendar.monthrange(prev_year, prev_month)[month_days_tuple_index]
+            end_date = date(prev_year, prev_month, days_count)
         elif period == "THIS_QUARTER":
-            start_date = date(default_hist_year, august_num, single_increment)
-            days_count = calendar.monthrange(default_hist_year, october_num)[single_increment]
-            end_date = date(default_hist_year, october_num, days_count)
+            quarter_zero_based_index = (curr_month - single_increment) // quarter_span_months
+            quarter_start_month = quarter_zero_based_index * quarter_span_months + single_increment
+            quarter_end_month = quarter_start_month + two_months_offset
+            start_date = date(curr_year, quarter_start_month, first_day_of_month)
+            quarter_end_days_count = calendar.monthrange(curr_year, quarter_end_month)[month_days_tuple_index]
+            end_date = date(curr_year, quarter_end_month, quarter_end_days_count)
         elif period == "CUSTOM" and start_param and end_param:
             start_date = get_parsed_date(start_param)
             end_date = get_parsed_date(end_param)
         else:
-            start_date = date(default_hist_year, october_num, single_increment)
-            days_count = calendar.monthrange(default_hist_year, october_num)[single_increment]
-            end_date = date(default_hist_year, october_num, days_count)
+            start_date = date(curr_year, curr_month, first_day_of_month)
+            days_count = calendar.monthrange(curr_year, curr_month)[month_days_tuple_index]
+            end_date = date(curr_year, curr_month, days_count)
 
         records_qs = AttendanceRecord.objects.filter(
             employee=employee,
